@@ -1,9 +1,11 @@
 package app;
 
 import customers.Customer;
+
 import java.util.Scanner;
 
 public class Main {
+
     public static void main(String[] args) {
        Scanner sc = new Scanner(System.in);
        System.out.println("Введіть кількість клієнтів: ");
@@ -15,22 +17,16 @@ public class Main {
            System.out.print("ID: ");
            int id = sc.nextInt();
            sc.nextLine();
-
            System.out.print("Прізвище: ");
            String lastName = sc.nextLine();
-
            System.out.print("Ім'я: ");
            String firstName = sc.nextLine();
-
            System.out.print("По батькові: ");
            String middleName = sc.nextLine();
-
            System.out.print("Адреса: ");
            String address = sc.nextLine();
-
            System.out.print("Номер картки: ");
            String cardNumber = sc.nextLine();
-
            System.out.print("Баланс: ");
            double balance = sc.nextDouble();
            sc.nextLine();

@@ -34,15 +34,8 @@ public class Customer {
     }
 
     public String toString() {
-        return "Customer{" +
-                "id=" + id +
-                ", lastName='" + lastName + '\'' +
-                ", firstName='" + firstName + '\'' +
-                ", middleName='" + middleName + '\'' +
-                ", address='" + address + '\'' +
-                ", cardNumber='" + cardNumber + '\'' +
-                ", balance=" + balance +
-                '}';
+        return String.format("ID: %d ; %s %s %s ; Адреса: %s ; Картка: %s ; Баланс: %.2f",
+                id, lastName, firstName, middleName, address, cardNumber, balance);
     }
     public static class CustomerBuilder {
         private int id;
