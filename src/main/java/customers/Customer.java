@@ -21,6 +21,14 @@ public class Customer {
         this.cardNumber = cardNumber;
         this.balance = balance;
     }
+    public int getId() { return id; }
+    public String getLastName() { return lastName; }
+    public String getFirstName() { return firstName; }
+    public String getMiddleName() { return middleName; }
+    public String getAddress() { return address; }
+    public String getCardNumber() { return cardNumber; }
+    public double getBalance() { return balance; }
+
     public static CustomerBuilder builder(){
         return new CustomerBuilder();
     }
@@ -40,8 +48,8 @@ public class Customer {
         private int id;
         private String lastName;
         private String firstName;
-        private String midleNAme;
-        private String Address;
+        private String middleName;
+        private String address;
         private String cardNumber;
         private double balance;
 
@@ -55,8 +63,8 @@ public class Customer {
             return this;
         }
 
-        public CustomerBuilder setMidleNAme(String midleNAme) {
-            this.midleNAme = midleNAme;
+        public CustomerBuilder setMiddleName(String middleName) {
+            this.middleName = middleName;
             return this;
         }
 
@@ -71,7 +79,7 @@ public class Customer {
         }
 
         public CustomerBuilder setAddress(String address) {
-            Address = address;
+            this.address = address;
             return this;
         }
 
@@ -86,10 +94,8 @@ public class Customer {
         }
         private void validate(Customer customer) {
             if(customer.lastName == null || customer.firstName == null || customer.middleName == null) {
-                throw new IllegalArgumentException("First Name and Middle NAme cannot be null.");
+                throw new IllegalArgumentException("\"Ім'я, прізвище і по батькові не можуть бути порожні\"");
             }
-
         }
     }
-
 }
