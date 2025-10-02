@@ -4,18 +4,37 @@ public class Customer {
     private int id;
     private String lastName;
     private String firstName;
-    private String midleNAme;
-    private String Address;
+    private String middleName;
+    private String address;
     private String cardNumber;
     private double balance;
 
-    public Customer(String lastName, String firstName, String midleNAme, String Address, String cardNumber, double balance) {
+    private Customer() {}
+
+    private Customer(int id, String lastName, String firstName, String middleName,
+                     String address, String cardNumber, double balance) {
+        this.id = id;
         this.lastName = lastName;
         this.firstName = firstName;
-        this.midleNAme = midleNAme;
-        this.Address = Address;
+        this.middleName = middleName;
+        this.address = address;
         this.cardNumber = cardNumber;
         this.balance = balance;
+    }
+    public static CustomerBuilder builder(){
+        return new CustomerBuilder();
+    }
+
+    public String toString() {
+        return "Customer{" +
+                "id=" + id +
+                ", lastName='" + lastName + '\'' +
+                ", firstName='" + firstName + '\'' +
+                ", middleName='" + middleName + '\'' +
+                ", address='" + address + '\'' +
+                ", cardNumber='" + cardNumber + '\'' +
+                ", balance=" + balance +
+                '}';
     }
     public static class CustomerBuilder {
         private int id;
@@ -60,8 +79,17 @@ public class Customer {
             this.balance = balance;
             return this;
         }
+        public Customer build() {
+            Customer customer = new Customer(id, lastName, firstName, middleName, address, cardNumber, balance);
+            validate(customer);
+            return customer;
+        }
+        private void validate(Customer customer) {
+            if(customer.lastName == null || customer.firstName == null || customer.middleName == null) {
+                throw new IllegalArgumentException("First Name and Middle NAme cannot be null.");
+            }
+
+        }
     }
-    public static CustomerBuilder builder(){
-        return new CustomerBuilder();
-    }
+
 }
