@@ -10,7 +10,6 @@ import java.io.PrintWriter;
 import java.io.IOException;
 
 public class Main {
-
     public static void main(String[] args) {
         Scanner sc = new Scanner(System.in);
         List<Customer> customers;
@@ -24,7 +23,6 @@ public class Main {
             customers = new ArrayList<>();
             System.out.println("База пуста, додайте нових клієнтів вручну.");
         }
-
         int choice;
         do{
             System.out.println("\nМеню");
