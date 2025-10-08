@@ -1,7 +1,7 @@
 package customers;
 
 public class Customer {
-    private int id;
+    private long id;
     private String lastName;
     private String firstName;
     private String middleName;
@@ -11,7 +11,7 @@ public class Customer {
 
     private Customer() {}
 
-    private Customer(int id, String lastName, String firstName, String middleName,
+    private Customer(long id, String lastName, String firstName, String middleName,
                      String address, String cardNumber, double balance) {
         this.id = id;
         this.lastName = lastName;
@@ -21,7 +21,7 @@ public class Customer {
         this.cardNumber = cardNumber;
         this.balance = balance;
     }
-    public int getId() { return id; }
+    public long getId() { return id; }
     public String getLastName() { return lastName; }
     public String getFirstName() { return firstName; }
     public String getMiddleName() { return middleName; }
@@ -38,7 +38,7 @@ public class Customer {
                 id, lastName, firstName, middleName, address, cardNumber, balance);
     }
     public static class CustomerBuilder {
-        private int id;
+        private long id;
         private String lastName;
         private String firstName;
         private String middleName;
@@ -46,7 +46,7 @@ public class Customer {
         private String cardNumber;
         private double balance;
 
-        public CustomerBuilder setId(int id) {
+        public CustomerBuilder setId(long   id) {
             this.id = id;
             return this;
         }
