@@ -8,6 +8,7 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.PrintWriter;
 import java.io.IOException;
+import java.util.Locale;
 
 public class Main {
     public static void main(String[] args) {
@@ -27,11 +28,12 @@ public class Main {
         do{
             System.out.println("\nМеню");
             System.out.println("1. Пошук за ім'ям");
-            System.out.println("2. Пошук за інтервалом нормерів карток");
+            System.out.println("2. Пошук за інтервалом номерів карток");
             System.out.println("3. Пошук боржника");
             System.out.println("4. Додати нового користувача");
             System.out.println("5. Видалити користувача");
             System.out.println("6. Вивести усіх користувачів");
+            System.out.println("7. Відновити користувача");
             System.out.println("0. Вихід");
             choice = sc.nextInt();
             sc.nextLine();
@@ -53,13 +55,23 @@ public class Main {
                     findWithMinus(customers);
                 }
                 case 4 ->{
-                    customers.add(inputCustomer(sc));
+                    Customer newCustomer = inputCustomer(sc, customers);
+                    if (newCustomer != null) {
+                        customers.add(newCustomer);
+                    }
                 }
                 case 5 ->{
                     removeByFullName(sc, customers);
                 }
                 case 6 ->{
-                    customers.forEach(System.out::println);
+                    for (Customer c : customers) {
+                        if (!c.isDeleted()) {
+                            System.out.println(c);
+                        }
+                    }
+                }
+                case 7 -> {
+                    restoreByFullName(sc, customers);
                 }
                 case 0 -> {
                     System.out.println("Зберегти зміни у файл перед виходом? (так/ні): ");
@@ -84,6 +96,7 @@ public class Main {
             String line;
             while ((line = br.readLine()) != null) {
                 String[] parts = line.split(",");
+
                 if (parts.length != 8) continue;
 
                 long id = Long.parseLong(parts[0].trim());
@@ -93,6 +106,7 @@ public class Main {
                 String address = parts[4].trim();
                 String cardNumber = parts[5].trim();
                 double balance = Double.parseDouble(parts[6].trim());
+                boolean deleted = Boolean.parseBoolean(parts[7].trim());
 
                 customers.add(Customer.builder()
                         .setId(id)
@@ -102,6 +116,7 @@ public class Main {
                         .setAddress(address)
                         .setCardNumber(cardNumber)
                         .setBalance(balance)
+                        .setDeleted(deleted)
                         .build());
             }
         } catch (IOException e) {
@@ -113,25 +128,37 @@ public class Main {
     public static void saveCustomersToFile(String filename, List<Customer> customers) {
         try (PrintWriter pw = new PrintWriter(new FileWriter(filename))) {
             for (Customer c : customers) {
-                pw.printf("%d,%s,%s,%s,%s,%s,%.2f%n",
+                pw.printf(Locale.US, "%d,%s,%s,%s,%s,%s,%.2f, %b%n",
                         c.getId(),
                         c.getLastName(),
                         c.getFirstName(),
                         c.getMiddleName(),
                         c.getAddress(),
                         c.getCardNumber(),
-                        c.getBalance());
+                        c.getBalance(),
+                        c.isDeleted());
             }
             System.out.println(" Дані збережено у файл: " + filename);
         } catch (IOException e) {
             System.out.println(" Помилка при записі у файл: " + e.getMessage());
         }
     }
-    private static Customer inputCustomer(Scanner sc){
+    private static Customer inputCustomer(Scanner sc, List<Customer> customers){
         System.out.println("\nВведення даних для клієнта ");
         System.out.print("ID: ");
         long id = sc.nextInt();
         sc.nextLine();
+
+        for (Customer c : customers) {
+            if(c!=null){
+                if (c.getId() == id) {
+                    System.out.println(" Клієнт з таким ID вже існує! Введіть інший.");
+                    System.out.println("Введіть ще раз id");
+                    return null;
+                }
+            }
+
+        }
         System.out.print("Прізвище: ");
         String lastName = sc.nextLine();
         System.out.print("Ім'я: ");
@@ -155,29 +182,49 @@ public class Main {
                 .setBalance(balance)
                 .build();
     }
+
+    private static void findAndChangeCustomerStatus(Scanner sc, List<Customer> customers, boolean searchStatus,
+                                                    String successMessage, String failureMessage) {
+        System.out.print("Введіть ID клієнта: ");
+        long id = sc.nextLong();
+        sc.nextLine();
+
+        boolean found = false;
+        for (Customer c : customers) {
+
+            if (c.getId() == id && c.isDeleted() == searchStatus) {
+                c.setDeleted(!searchStatus);
+                System.out.println(successMessage);
+                found = true;
+                break;
+            }
+        }
+
+        if (!found) {
+
+            System.out.println(failureMessage);
+        }
+    }
+
+
     public static void removeByFullName(Scanner sc, List<Customer> customers) {
-        System.out.print("Введіть прізвище: ");
-        String lastName = sc.nextLine();
-        System.out.print("Введіть ім'я: ");
-        String firstName = sc.nextLine();
-        System.out.print("Введіть по батькові: ");
-        String middleName = sc.nextLine();
+        findAndChangeCustomerStatus(sc, customers,
+                false,
+                "Клієнта успішно приховано.",
+                "Такого клієнта не знайдено або він вже видалений.");
+    }
 
-        boolean removed = customers.removeIf(c ->
-                c.getLastName().equalsIgnoreCase(lastName) &&
-                        c.getFirstName().equalsIgnoreCase(firstName) &&
-                        c.getMiddleName().equalsIgnoreCase(middleName)
-        );
 
-        if (removed)
-            System.out.println("Клієнта " + lastName + " " + firstName + " " + middleName + " видалено.");
-        else
-            System.out.println("Такого клієнта не знайдено.");
+    public static void restoreByFullName(Scanner sc, List<Customer> customers) {
+        findAndChangeCustomerStatus(sc, customers,
+                true,
+                "Клієнта успішно відновлено.",
+                "Видаленого клієнта з таким ПІБ не знайдено.");
     }
     public static void findByFirstName(List<Customer> customers, String name) {
         boolean found = false;
         for (Customer c : customers) {
-            if (c.getFirstName().equalsIgnoreCase(name)) {
+            if (!c.isDeleted() && c.getFirstName().equalsIgnoreCase(name)) {
                 System.out.println(c);
                 found = true;
             }
@@ -187,6 +234,7 @@ public class Main {
     public static void findByCardRange(List<Customer> customers, long min, long max) {
         boolean found = false;
         for (Customer c : customers) {
+            if(!c.isDeleted()) continue;
             try {
 
                 long card = Long.parseLong(c.getCardNumber().replaceAll("\\D", ""));
@@ -205,7 +253,7 @@ public class Main {
     public static void findWithMinus(List<Customer> customers) {
         int count = 0;
         for (Customer c : customers) {
-            if (c.getBalance() < 0) {
+            if (!c.isDeleted() && c.getBalance() < 0) {
                 System.out.println(c);
                 count++;
             }

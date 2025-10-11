@@ -8,11 +8,12 @@ public class Customer {
     private String address;
     private String cardNumber;
     private double balance;
+    private boolean isDeleted;
 
     private Customer() {}
 
     private Customer(long id, String lastName, String firstName, String middleName,
-                     String address, String cardNumber, double balance) {
+                     String address, String cardNumber, double balance, boolean isDeleted) {
         this.id = id;
         this.lastName = lastName;
         this.firstName = firstName;
@@ -20,6 +21,7 @@ public class Customer {
         this.address = address;
         this.cardNumber = cardNumber;
         this.balance = balance;
+        this.isDeleted = isDeleted;
     }
     public long getId() { return id; }
     public String getLastName() { return lastName; }
@@ -28,6 +30,9 @@ public class Customer {
     public String getAddress() { return address; }
     public String getCardNumber() { return cardNumber; }
     public double getBalance() { return balance; }
+    public boolean isDeleted() { return isDeleted; }
+    public void setDeleted(boolean deleted) { this.isDeleted = deleted; }
+
 
     public static CustomerBuilder builder(){
         return new CustomerBuilder();
@@ -45,7 +50,7 @@ public class Customer {
         private String address;
         private String cardNumber;
         private double balance;
-
+        private boolean isDeleted;
         public CustomerBuilder setId(long   id) {
             this.id = id;
             return this;
@@ -80,8 +85,14 @@ public class Customer {
             this.balance = balance;
             return this;
         }
+
+        public CustomerBuilder setDeleted(boolean isDeleted) {
+            this.isDeleted = isDeleted;
+            return this;
+        }
+
         public Customer build() {
-            Customer customer = new Customer(id, lastName, firstName, middleName, address, cardNumber, balance);
+            Customer customer = new Customer(id, lastName, firstName, middleName, address, cardNumber, balance, isDeleted);
             validate(customer);
             return customer;
         }
@@ -90,5 +101,7 @@ public class Customer {
                 throw new IllegalArgumentException("\"Ім'я, прізвище і по батькові не можуть бути порожні\"");
             }
         }
+
+
     }
 }
